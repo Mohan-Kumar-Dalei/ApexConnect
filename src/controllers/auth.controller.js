@@ -178,13 +178,64 @@ const forgotPassword = async (req, res) => {
         // reset URL (frontend link)
         const resetUrl = `${process.env.FRONTEND_URL}/api/auth/reset-password/${resetToken}`;
 
-        const message = `
-      <h2>Password Reset Request</h2>
-      <p>Click the link below to reset your password (valid for 15 minutes):</p>
-      <a href="${resetUrl}" target="_blank">${resetUrl}</a>
-    `;
+        const resetPasswordTemplate = (userName, resetUrl) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 0;
+      margin: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333333;
+    }
+    p {
+      color: #555555;
+    }
+    a.button {
+      display: inline-block;
+      padding: 12px 20px;
+      margin-top: 20px;
+      color: #fff;
+      background-color: #4f46e5;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #888888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Hello ${userName},</h2>
+    <p>You requested a password reset. Click the button below to reset your password. This link is valid for 15 minutes only.</p>
+    <a href="${resetUrl}" class="button">Reset Password</a>
+    <p class="footer">If you did not request this, ignore this email.</p>
+  </div>
+</body>
+</html>
+`;
+        const htmlContent = resetPasswordTemplate(user.name, resetUrl);
 
-        await sendEmail(user.email, "Password Reset Request", message);
+
+        await sendEmail(user.email, "Password Reset Request", htmlContent);
 
         res.json({ message: "Reset link sent to your email if you not see then check you spam folder" });
     } catch (error) {
