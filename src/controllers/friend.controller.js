@@ -22,9 +22,6 @@ const followUser = async (req, res) => {
         user.following.push(userIdToFollow);
         targetUser.followers.push(userId);
 
-        await user.save();
-        await targetUser.save();
-
         // socket notification
         if (global.io) {
             global.io.to(userIdToFollow).emit("new_follower", {
@@ -32,6 +29,8 @@ const followUser = async (req, res) => {
                 name: user.name
             });
         }
+        await user.save();
+        await targetUser.save();
 
         res.status(200).json({ message: "Followed successfully" });
 

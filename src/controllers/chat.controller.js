@@ -33,6 +33,10 @@ const sendMessage = async (req, res) => {
         const { chatId, content, messageType, mediaUrl } = req.body;
         const sender = req.user.id;
 
+        if (global.io) {
+            global.io.to(chatId).emit("newMessage", newMessage);
+        }
+
         const newMessage = await Message.create({
             chatId,
             sender,
@@ -44,9 +48,7 @@ const sendMessage = async (req, res) => {
         await Chat.findByIdAndUpdate(chatId, { lastMessage: newMessage._id });
 
 
-        if (global.io) {
-            global.io.to(chatId).emit("newMessage", newMessage);
-        }
+
 
         res.status(201).json(newMessage);
     } catch (error) {
