@@ -2,7 +2,7 @@ const postModel = require("../models/post.model.js");
 const uploadToImageKit = require("../services/imageKitService.js");
 const { v4: uuidv4 } = require('uuid')
 const mongoose = require("mongoose");
-const userModel = require("../models/user.model");
+const userModel = require("../models/user.model.js");
 
 const createPost = async (req, res) => {
     try {

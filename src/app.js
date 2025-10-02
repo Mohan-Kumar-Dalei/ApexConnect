@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+
 const cookieParser = require('cookie-parser');
 const authRoute = require('./routers/auth.route');
 const postRoute = require('./routers/post.route');
@@ -15,7 +16,7 @@ app.use(cookieParser());
 const corsOptions = {
     origin: [
         "http://localhost:5173",
-        "https://apex-connect.netlify.app"
+        "https://apexconnect.onrender.com"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],

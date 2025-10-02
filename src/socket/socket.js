@@ -8,7 +8,7 @@ const initSocketServer = (httpServer) => {
         cors: {
             origin: [
                 "http://localhost:5173",
-                "https://apex-connect.netlify.app"
+                "https://apexconnect.onrender.com"
             ],
             methods: ["GET", "POST", "PUT", "DELETE"],
             credentials: true,
