@@ -106,7 +106,6 @@ const deleteChat = async (req, res) => {
 
 module.exports = {
     accessChat,
-    sendMessage,
     getMessages,
     getUserChats,
     deleteChat
