@@ -2,6 +2,8 @@ const { Server } = require('socket.io');
 const cookie = require('cookie');
 const jwt = require('jsonwebtoken');
 const userModel = require("../models/user.model");
+const Message = require("../models/message.model");
+const Chat = require("../models/chat.model");
 
 const initSocketServer = (httpServer) => {
     const io = new Server(httpServer, {
@@ -61,9 +63,49 @@ const initSocketServer = (httpServer) => {
         });
 
 
-        socket.on("sendMessage", (data) => {
-            const { chatId, message } = data;
-            io.to(chatId).emit("newMessage", message);
+        // Handle sending a chat message
+        socket.on("sendMessage", async (data) => {
+            const { chatId, content, messageType, mediaUrl } = data;
+            const sender = socket.user._id;
+
+            // 1️⃣ Create a temporary message (for client instant display)
+            const tempMessage = {
+                _id: "temp-" + Date.now(),
+                chatId,
+                sender,
+                content,
+                messageType,
+                mediaUrl,
+                createdAt: new Date(),
+            };
+
+            // 2️⃣ Emit immediately to all participants
+            io.to(chatId).emit("newMessage", tempMessage);
+
+            try {
+                // 3️⃣ Save in DB asynchronously
+                const savedMessage = await Message.create({
+                    chatId,
+                    sender,
+                    content,
+                    messageType,
+                    mediaUrl,
+                });
+
+                await Chat.findByIdAndUpdate(chatId, { lastMessage: savedMessage._id });
+
+                // 4️⃣ Emit to replace temp message with saved message
+                io.to(chatId).emit("updateMessage", {
+                    tempId: tempMessage._id,
+                    savedMessage,
+                });
+            } catch (error) {
+                console.error("Message save error:", error);
+                io.to(chatId).emit("messageError", {
+                    tempId: tempMessage._id,
+                    error: error.message,
+                });
+            }
         });
 
         socket.on('disconnect', () => {

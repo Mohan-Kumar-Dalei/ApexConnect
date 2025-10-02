@@ -58,7 +58,7 @@ const unfollowUser = async (req, res) => {
         );
 
         await user.save();
-        await targetUser.save();
+        await targetUser.save(); 
 
         res.status(200).json({ message: "Unfollowed successfully" });
 

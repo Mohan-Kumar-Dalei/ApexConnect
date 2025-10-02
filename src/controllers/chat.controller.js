@@ -28,33 +28,33 @@ const accessChat = async (req, res) => {
 };
 
 
-const sendMessage = async (req, res) => {
-    try {
-        const { chatId, content, messageType, mediaUrl } = req.body;
-        const sender = req.user.id;
+// const sendMessage = async (req, res) => {
+//     try {
+//         const { chatId, content, messageType, mediaUrl } = req.body;
+//         const sender = req.user.id;
 
-        if (global.io) {
-            global.io.to(chatId).emit("newMessage", newMessage);
-        }
+//         if (global.io) {
+//             global.io.to(chatId).emit("newMessage", newMessage);
+//         }
 
-        const newMessage = await Message.create({
-            chatId,
-            sender,
-            content,
-            messageType,
-            mediaUrl,
-        });
+//         const newMessage = await Message.create({
+//             chatId,
+//             sender,
+//             content,
+//             messageType,
+//             mediaUrl,
+//         });
 
-        await Chat.findByIdAndUpdate(chatId, { lastMessage: newMessage._id });
-
-
+//         await Chat.findByIdAndUpdate(chatId, { lastMessage: newMessage._id });
 
 
-        res.status(201).json(newMessage);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+
+
+//         res.status(201).json(newMessage);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 
 
 const getMessages = async (req, res) => {

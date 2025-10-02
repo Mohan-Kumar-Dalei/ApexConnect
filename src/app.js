@@ -24,7 +24,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, "../public")));
+
 
 // Routes
 app.use('/api/auth', authRoute);
@@ -32,9 +32,9 @@ app.use('/api/posts', postRoute);
 app.use('/api/chats', chatRoute);
 app.use('/api/friends', friendRoute);
 
-
 app.get("*name", (req, res) => {
     res.sendFile(path.join(__dirname, "../public/index.html"));
 });
+
 
 module.exports = app;
